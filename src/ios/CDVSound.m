@@ -27,7 +27,7 @@
 
 @implementation CDVSound
 
-@synthesize soundCache, avSession, currMediaId;
+@synthesize soundCache, avSession, currMediaId, duration;
 
 // Maps a url for a resource path for recording
 - (NSURL*)urlForRecording:(NSString*)resourcePath
@@ -215,6 +215,7 @@
 {
     NSString* mediaId = [command argumentAtIndex:0];
     NSString* resourcePath = [command argumentAtIndex:1];
+    self.duration = [command argumentAtIndex:2];
 
     CDVAudioFile* audioFile = [self audioFileForResource:resourcePath withId:mediaId doValidation:YES forRecording:NO];
 
@@ -345,6 +346,10 @@
                 if (avPlayer.currentItem && avPlayer.currentItem.asset) {
                     CMTime time = avPlayer.currentItem.asset.duration;
                     position = CMTimeGetSeconds(time);
+
+                    if (isnan(position)) {
+                        position = [self.duration doubleValue];
+                    }
 
                     if (audioFile.rate != nil){
                         float customRate = [audioFile.rate floatValue];
