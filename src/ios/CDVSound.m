@@ -545,6 +545,9 @@
 
     } else if (avPlayer != nil) {
         int32_t timeScale = avPlayer.currentItem.asset.duration.timescale;
+        if (timeScale == 0) {
+            timeScale = 1000;
+        }
         CMTime timeToSeek = CMTimeMakeWithSeconds(posInSeconds, timeScale);
 
         BOOL isPlaying = (avPlayer.rate > 0 && !avPlayer.error);
